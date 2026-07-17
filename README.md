@@ -1,39 +1,80 @@
 # baseline
 
-CLI that sets up AI tools, team standards, and working rules in one command — so every team member starts from the same baseline, regardless of who started the project.
+> One command to give your entire team the same AI tools, skills, and working rules — so anyone can pick up where someone else left off.
 
-## Install
+[![npm](https://img.shields.io/npm/v/@baseline-ia/baseline-cli)](https://www.npmjs.com/package/@baseline-ia/baseline-cli)
+[![node](https://img.shields.io/node/v/@baseline-ia/baseline-cli)](https://nodejs.org)
+[![license](https://img.shields.io/npm/l/@baseline-ia/baseline-cli)](./LICENSE)
+
+---
+
+## Quick start
 
 ```bash
 npm install -g @baseline-ia/baseline-cli
+baseline install
 ```
 
-## Usage
+That's it. Your machine now has the same setup as every other team member.
 
-```bash
-baseline install    # install team standards, skills and AI config
-baseline update     # update baseline and re-apply standards
-baseline status     # show installed tools and team config state
-baseline doctor     # verify that everything is correctly configured
-baseline onboard    # show the onboarding guide for your level
-```
+---
 
 ## What it installs
 
-- Skills for Claude Code (`~/.claude/skills/`) and OpenCode (`~/.opencode/skills/`)
-- Team standards block in `CLAUDE.md` / `AGENTS.md`
-- [Gentle-AI](https://github.com/Gentleman-Programming/gentle-ai) ecosystem
-- `openspec/` structure for spec-driven development (SDD)
+| Component | Where |
+|-----------|-------|
+| AI skills (SDD, review, design, git…) | `~/.claude/skills/` · `~/.opencode/skills/` |
+| Team standards block | `~/.claude/CLAUDE.md` · `~/.opencode/AGENTS.md` |
+| [Gentle-AI](https://github.com/Gentleman-Programming/gentle-ai) ecosystem | global |
+| OpenSpec structure for spec-driven development | `./openspec/` in the project |
 
-## Onboarding
+---
+
+## Commands
 
 ```bash
-baseline onboard junior
-baseline onboard semi
-baseline onboard senior
+baseline install          # set up tools, skills, and team config
+baseline update           # pull latest baseline and re-apply standards
+baseline status           # show what's installed and configured
+baseline doctor           # diagnose missing or broken setup
+baseline onboard junior   # onboarding guide by level: junior · semi · senior
 ```
+
+---
+
+## Team workflow
+
+Every change follows SDD (Spec-Driven Development):
+
+```
+explore → propose → spec → design → tasks → apply → verify → archive
+```
+
+Skills are installed for every step. Start any change with:
+
+```bash
+/sdd-new <description of what you're building>
+```
+
+---
+
+## Supported AI tools
+
+| Tool | Skills | Team config |
+|------|--------|-------------|
+| [Claude Code](https://claude.ai/code) | ✅ | ✅ `CLAUDE.md` |
+| [OpenCode](https://opencode.ai) | ✅ | ✅ `AGENTS.md` |
+| Antigravity | — | coming soon |
+
+---
 
 ## Requirements
 
 - Node.js >= 18
-- At least one AI tool: [Claude Code](https://claude.ai/code), [OpenCode](https://opencode.ai), or Antigravity
+- At least one supported AI tool installed
+
+---
+
+## CI — publish on release
+
+The workflow in `.github/workflows/publish.yml` runs lint, build, and publish automatically when you create a GitHub release. Add your `NPM_TOKEN` as a repository secret to enable it.
