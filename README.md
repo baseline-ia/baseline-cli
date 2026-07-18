@@ -36,7 +36,9 @@ That's it. Your machine now has the same setup as every other team member.
 baseline install                  # auto-detect tools and configure all
 baseline install claude           # configure only Claude Code
 baseline install opencode         # configure only OpenCode
-baseline install kiro             # configure only Kiro
+baseline install kiro-ide         # configure only Kiro (IDE, ~/.kiro detected)
+baseline install kiro-cli         # configure only Kiro (CLI binary detected)
+baseline install codex            # configure only Codex
 baseline update                   # pull latest baseline and re-apply standards
 baseline status                   # show what's installed and configured
 baseline doctor                   # diagnose missing or broken setup
@@ -63,14 +65,18 @@ Skills are installed for every step. Start any change with:
 
 ## Supported AI tools
 
-| Tool | Skills | Team config |
-|------|--------|-------------|
-| [Claude Code](https://claude.ai/code) | ✅ | ✅ `~/.claude/CLAUDE.md` |
-| [OpenCode](https://opencode.ai) | ✅ | ✅ `~/.opencode/AGENTS.md` |
-| [Kiro](https://kiro.dev) | ✅ | ✅ `~/.kiro/steering/baseline.md` |
-| Antigravity | — | coming soon |
+| Tool | Skills | Team config | Gentle-AI preset |
+|------|--------|-------------|-----------------|
+| [Claude Code](https://claude.ai/code) | ✅ | ✅ `~/.claude/CLAUDE.md` | `full-gentleman` + SDD multi |
+| [OpenCode](https://opencode.ai) | ✅ | ✅ `~/.opencode/AGENTS.md` (strict TDD) | `full-gentleman` + SDD multi |
+| [Kiro IDE](https://kiro.dev) (`~/.kiro` detected) | ✅ | ✅ `~/.kiro/steering/baseline.md` + statusline sub-agent | `performance` + SDD multi |
+| [Kiro CLI](https://kiro.dev) (`kiro` binary detected) | ✅ | ✅ same as Kiro IDE | `performance` + SDD multi |
+| Codex | — | via gentle-ai | `recommended` |
+| Antigravity | — | coming soon | — |
 
 Detection is automatic — `baseline install` reads your environment and configures only the tools that are present.
+
+All tools use `--persona neutral`.
 
 ---
 

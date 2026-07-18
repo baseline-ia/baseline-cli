@@ -3,17 +3,19 @@ import fs from 'fs-extra'
 import path from 'path'
 import os from 'os'
 
-export type AITool = 'claude-code' | 'opencode' | 'antigravity' | 'kiro'
+export type AITool = 'claude-code' | 'opencode' | 'antigravity' | 'kiro-ide' | 'kiro-cli' | 'codex'
 
 export interface DetectedTools {
   tools: AITool[]
   claudeCode: boolean
   opencode: boolean
   antigravity: boolean
-  kiro: boolean
+  kiroIde: boolean
+  kiroCli: boolean
+  codex: boolean
 }
 
-function isInstalled(command: string): boolean {
+function binaryExists(command: string): boolean {
   try {
     execSync(`command -v ${command}`, { stdio: 'ignore' })
     return true
@@ -27,16 +29,20 @@ function dirExists(dirPath: string): boolean {
 }
 
 export function detectTools(): DetectedTools {
-  const claudeCode = isInstalled('claude')
-  const opencode = isInstalled('opencode')
-  const antigravity = isInstalled('antigravity')
-  const kiro = isInstalled('kiro') || dirExists(path.join(os.homedir(), '.kiro'))
+  const claudeCode = binaryExists('claude')
+  const opencode = binaryExists('opencode')
+  const antigravity = binaryExists('antigravity')
+  const codex = binaryExists('codex')
+  const kiroIde = dirExists(path.join(os.homedir(), '.kiro'))
+  const kiroCli = binaryExists('kiro') && !kiroIde
 
   const tools: AITool[] = []
   if (claudeCode) tools.push('claude-code')
   if (opencode) tools.push('opencode')
   if (antigravity) tools.push('antigravity')
-  if (kiro) tools.push('kiro')
+  if (kiroIde) tools.push('kiro-ide')
+  if (kiroCli) tools.push('kiro-cli')
+  if (codex) tools.push('codex')
 
-  return { tools, claudeCode, opencode, antigravity, kiro }
+  return { tools, claudeCode, opencode, antigravity, kiroIde, kiroCli, codex }
 }

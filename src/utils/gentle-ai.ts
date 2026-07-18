@@ -1,11 +1,19 @@
 import { execSync } from 'child_process'
 import { logger } from './logger'
+import type { AITool } from '../detector'
 
 const INSTALL_URL = 'https://raw.githubusercontent.com/Gentleman-Programming/gentle-ai/main/scripts/install.sh'
+const PERSONA = 'neutral'
 
-const DEFAULT_PERSONA = 'neutral' as const
-type Persona = 'neutral' | 'gentleman' | 'custom'
-const PERSONA: Persona = DEFAULT_PERSONA
+// Maps our tool names to gentle-ai agent IDs and install config
+const AGENT_CONFIG: Record<string, { agentId: string; preset: string; sddMode?: string }> = {
+  'claude-code':  { agentId: 'claude-code', preset: 'full-gentleman', sddMode: 'multi' },
+  'opencode':     { agentId: 'opencode',    preset: 'full-gentleman', sddMode: 'multi' },
+  'kiro-ide':     { agentId: 'kiro-ide',    preset: 'performance',    sddMode: 'multi' },
+  'kiro-cli':     { agentId: 'kiro-ide',    preset: 'performance',    sddMode: 'multi' },
+  'codex':        { agentId: 'codex',       preset: 'recommended' },
+  'antigravity':  { agentId: 'antigravity', preset: 'full-gentleman' },
+}
 
 export function isInstalled(): boolean {
   try {
@@ -33,20 +41,38 @@ function trustBrewTap(): void {
   }
 }
 
-export async function runInstall(agents: string[]): Promise<void> {
-  if (agents.length === 0) return
+function gentleAiInstall(agentId: string, preset: string, sddMode?: string): void {
+  const sddFlag = sddMode ? ` --sdd-mode ${sddMode}` : ''
+  execSync(
+    `gentle-ai install --agent ${agentId} --preset ${preset} --persona ${PERSONA}${sddFlag}`,
+    { stdio: 'inherit', env: { ...process.env, GENTLE_AI_YES: '1' } }
+  )
+}
+
+export async function runInstall(tools: AITool[]): Promise<void> {
+  if (tools.length === 0) return
 
   trustBrewTap()
 
-  const agentList = agents.join(',')
-  logger.info(`Running gentle-ai install --agent ${agentList}`)
+  // Group tools by (preset, sddMode) to minimize install calls
+  type ConfigKey = string
+  const groups = new Map<ConfigKey, { agentIds: string[]; preset: string; sddMode?: string }>()
 
-  execSync(
-    `gentle-ai install --agent ${agentList} ` +
-    `--preset full-gentleman --persona ${PERSONA}`,
-    {
-      stdio: 'inherit',
-      env: { ...process.env, GENTLE_AI_YES: '1' },
+  for (const tool of tools) {
+    const cfg = AGENT_CONFIG[tool]
+    if (!cfg) continue
+    const key: ConfigKey = `${cfg.preset}::${cfg.sddMode ?? ''}`
+    if (!groups.has(key)) {
+      groups.set(key, { agentIds: [], preset: cfg.preset, sddMode: cfg.sddMode })
     }
-  )
+    const group = groups.get(key)!
+    if (!group.agentIds.includes(cfg.agentId)) {
+      group.agentIds.push(cfg.agentId)
+    }
+  }
+
+  for (const { agentIds, preset, sddMode } of groups.values()) {
+    logger.info(`Running gentle-ai install --agent ${agentIds.join(',')} --preset ${preset}`)
+    gentleAiInstall(agentIds.join(','), preset, sddMode)
+  }
 }

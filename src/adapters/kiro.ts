@@ -6,7 +6,20 @@ import { logger } from '../utils/logger'
 const KIRO_DIR = path.join(os.homedir(), '.kiro')
 const SKILLS_DIR = path.join(KIRO_DIR, 'skills')
 const STEERING_DIR = path.join(KIRO_DIR, 'steering')
+const AGENTS_DIR = path.join(KIRO_DIR, 'agents')
 const STEERING_FILE = path.join(STEERING_DIR, 'baseline.md')
+
+const STATUSLINE_AGENT = `# Statusline
+
+Monitors active tasks, current SDD phase, and session health. Surfaces the current
+change ID and phase (explore → propose → spec → design → tasks → apply → verify → archive)
+in the editor status line so the team always knows where a change stands.
+
+## Triggers
+- On file open inside \`openspec/changes/\`
+- On \`/sdd-status\` invocation
+- On session start
+`
 
 export async function apply(assetsDir: string): Promise<void> {
   logger.title('Kiro')
@@ -18,6 +31,7 @@ export async function apply(assetsDir: string): Promise<void> {
 
   await applySkills(assetsDir)
   await applySteering(assetsDir)
+  await applySubAgents()
 }
 
 async function applySkills(assetsDir: string): Promise<void> {
@@ -53,4 +67,13 @@ async function applySteering(assetsDir: string): Promise<void> {
   await fs.copy(appendSource, STEERING_FILE, { overwrite: true })
 
   logger.success('steering/baseline.md updated')
+}
+
+async function applySubAgents(): Promise<void> {
+  await fs.ensureDir(AGENTS_DIR)
+
+  const statuslineDest = path.join(AGENTS_DIR, 'statusline.md')
+  await fs.writeFile(statuslineDest, STATUSLINE_AGENT, 'utf-8')
+
+  logger.success('sub-agent statusline installed')
 }

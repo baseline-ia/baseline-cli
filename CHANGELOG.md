@@ -10,10 +10,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.1.1] - 2026-07-18
 
 ### Added
-- **Kiro IDE support** — `baseline install` now configures Kiro automatically when detected
-  - Skills copied to `~/.kiro/skills/`
-  - Team standards written to `~/.kiro/steering/baseline.md` (Kiro's native steering mechanism)
-  - Detection works via `kiro` binary on PATH **or** presence of `~/.kiro` directory, since Kiro is a desktop app and the binary may not be on PATH in all environments
+- **Kiro IDE and Kiro CLI** — two separate detection strategies for Kiro:
+  - `kiro-ide`: detected by presence of `~/.kiro` directory (desktop app)
+  - `kiro-cli`: detected by `kiro` binary on PATH (CLI mode)
+  - Both use the same `~/.kiro` adapter; gentle-ai agent ID is `kiro-ide` for both
+  - Sub-agent `statusline` installed to `~/.kiro/agents/statusline.md`
+- **Per-agent gentle-ai presets** — install now runs targeted installs per tool:
+  - Kiro: `--preset performance` + `--sdd-mode multi` (frontier models for SDD phases)
+  - Codex: `--preset recommended`
+  - Claude Code / OpenCode: `--preset full-gentleman` + `--sdd-mode multi`
+- **OpenCode strict TDD mode** — `Strict TDD Mode: enabled` written to `AGENTS.md`
+- **`baseline install [tool]`** — target a single tool:
+  - `baseline install kiro-ide`, `baseline install kiro-cli`, `baseline install claude`, `baseline install opencode`, `baseline install codex`
+- **Codex detection** — `codex` binary now auto-detected and configured via gentle-ai
+
+### Fixed
+- `gentle-ai install` failing with "Refusing to load formula from untrusted tap" — trusts `gentleman-programming/tap` via `brew trust` before install
+- Kiro agent ID corrected to `kiro-ide` (was `kiro`) to match gentle-ai's registered agent ID
 - **`baseline install [tool]`** — optionally target a single tool instead of auto-detecting all
   - `baseline install kiro` — configure only Kiro
   - `baseline install claude` — configure only Claude Code

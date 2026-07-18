@@ -8,6 +8,8 @@ const OPENCODE_DIR = path.join(os.homedir(), '.opencode')
 const SKILLS_DIR = path.join(OPENCODE_DIR, 'skills')
 const AGENTS_MD = path.join(OPENCODE_DIR, 'AGENTS.md')
 
+const STRICT_TDD_BLOCK = '\nStrict TDD Mode: enabled\n'
+
 export async function apply(assetsDir: string): Promise<void> {
   logger.title('OpenCode')
 
@@ -50,7 +52,7 @@ async function applyAgentsMd(assetsDir: string): Promise<void> {
   if (!await fs.pathExists(appendSource)) return
 
   const appendContent = await fs.readFile(appendSource, 'utf-8')
-  const block = `\n${MARKER}\n${appendContent}\n${MARKER}\n`
+  const block = `\n${MARKER}\n${STRICT_TDD_BLOCK}${appendContent}\n${MARKER}\n`
 
   if (await fs.pathExists(AGENTS_MD)) {
     const existing = await fs.readFile(AGENTS_MD, 'utf-8')
@@ -64,5 +66,5 @@ async function applyAgentsMd(assetsDir: string): Promise<void> {
     await fs.writeFile(AGENTS_MD, block, 'utf-8')
   }
 
-  logger.success('AGENTS.md updated')
+  logger.success('AGENTS.md updated (strict TDD mode enabled)')
 }

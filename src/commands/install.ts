@@ -8,11 +8,27 @@ import { apply as applyKiro } from '../adapters/kiro'
 import { setup as setupOpenSpec } from '../utils/openspec'
 import { isInstalled as isGentleAiInstalled, installCli as installGentleAi, runInstall as runGentleAiInstall } from '../utils/gentle-ai'
 import { logger } from '../utils/logger'
+import type { AITool } from '../detector'
 
 const ASSETS_DIR = path.join(__dirname, '..', 'src', 'assets')
 
-const VALID_TOOLS = ['claude', 'claude-code', 'opencode', 'kiro', 'antigravity'] as const
+const VALID_TOOLS = ['claude', 'claude-code', 'opencode', 'kiro-ide', 'kiro-cli', 'kiro', 'codex', 'antigravity'] as const
 type ToolArg = typeof VALID_TOOLS[number]
+
+// Normalize user-facing aliases to internal AITool names
+function normalizeTool(tool: string): AITool | null {
+  switch (tool.toLowerCase()) {
+    case 'claude':
+    case 'claude-code': return 'claude-code'
+    case 'opencode':    return 'opencode'
+    case 'kiro':
+    case 'kiro-ide':    return 'kiro-ide'
+    case 'kiro-cli':    return 'kiro-cli'
+    case 'codex':       return 'codex'
+    case 'antigravity': return 'antigravity'
+    default:            return null
+  }
+}
 
 export async function install(tool?: string): Promise<void> {
   console.log(chalk.bold.magenta('\n  baseline — install\n'))
@@ -24,41 +40,47 @@ export async function install(tool?: string): Promise<void> {
   }
 
   const detected = detectTools()
-  const t = tool?.toLowerCase()
+  const targetTool = tool ? normalizeTool(tool) : null
 
-  const runClaude = !t || t === 'claude' || t === 'claude-code'
-  const runOpencode = !t || t === 'opencode'
-  const runKiro = !t || t === 'kiro'
-  const runAntigravity = !t || t === 'antigravity'
-
-  if (!t && detected.tools.length === 0) {
+  if (!targetTool && detected.tools.length === 0) {
     logger.error('No AI tools detected.')
-    logger.dim('Install claude, opencode, kiro or antigravity first.')
+    logger.dim('Install claude, opencode, kiro-ide, kiro-cli, codex or antigravity first.')
     process.exit(1)
   }
 
-  if (t) {
-    logger.info(`Target: ${t}`)
+  if (targetTool) {
+    logger.info(`Target: ${targetTool}`)
   } else {
     logger.info(`Detected: ${detected.tools.join(', ')}`)
   }
 
-  const agentsForGentleAi = t
-    ? detected.tools.filter(a => a === (t === 'claude' ? 'claude-code' : t))
+  // Determine which adapters to run
+  const run = (t: AITool) => !targetTool || targetTool === t
+
+  // Collect tools for gentle-ai (only detected tools, or forced target if not detected)
+  const agentsForGentleAi: AITool[] = targetTool
+    ? [targetTool]
     : detected.tools
 
   await ensureGentleAiEcosystem(agentsForGentleAi)
   await setupOpenSpec()
 
-  if (runClaude && (t || detected.claudeCode)) await safeApply('Claude Code', () => applyClaudeCode(ASSETS_DIR))
-  if (runOpencode && (t || detected.opencode)) await safeApply('OpenCode', () => applyOpenCode(ASSETS_DIR))
-  if (runKiro && (t || detected.kiro)) await safeApply('Kiro', () => applyKiro(ASSETS_DIR))
-  if (runAntigravity && (t || detected.antigravity)) await safeApply('Antigravity', () => applyAntigravity(ASSETS_DIR))
+  if (run('claude-code') && (targetTool || detected.claudeCode))
+    await safeApply('Claude Code', () => applyClaudeCode(ASSETS_DIR))
+
+  if (run('opencode') && (targetTool || detected.opencode))
+    await safeApply('OpenCode', () => applyOpenCode(ASSETS_DIR))
+
+  if ((run('kiro-ide') || run('kiro-cli')) && (targetTool || detected.kiroIde || detected.kiroCli))
+    await safeApply('Kiro', () => applyKiro(ASSETS_DIR))
+
+  if (run('antigravity') && (targetTool || detected.antigravity))
+    await safeApply('Antigravity', () => applyAntigravity(ASSETS_DIR))
 
   console.log(chalk.bold.green('\n  ✓ Team standards installed successfully\n'))
 }
 
-async function ensureGentleAiEcosystem(agents: string[]): Promise<void> {
+async function ensureGentleAiEcosystem(tools: AITool[]): Promise<void> {
   logger.title('Gentle-AI ecosystem')
 
   if (!isGentleAiInstalled()) {
@@ -78,7 +100,7 @@ async function ensureGentleAiEcosystem(agents: string[]): Promise<void> {
   }
 
   try {
-    await runGentleAiInstall(agents)
+    await runGentleAiInstall(tools)
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err)
     logger.warn(`gentle-ai install failed: ${message}`)
