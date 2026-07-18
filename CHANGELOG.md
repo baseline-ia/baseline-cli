@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.3] - 2026-07-18
+
+### Added
+- **`/architecture-guidelines` skill** — AI runtime instructions that validate and guide code placement across the team's official stack:
+  - Backend: NestJS layer structure (`controllers/` → `services/` → `domain/` → `infrastructure/`) and Lambda selection criteria
+  - Frontend: React Query for server state, Zustand for UI state — no direct `fetch`/`axios` in `useEffect`
+  - Multi-tenancy: mandatory `tenant_id` filtering on every query, no raw SQL without architecture approval
+  - 7 hard rules enforced as CI/CD blockers: no hardcoded env vars, no empty catch, no `console.log`, no PII logging, SRP, DIP
+  - Full official guidelines document included in `references/` for AI context
+
 ## [0.1.2] - 2026-07-18
 
 ### Added

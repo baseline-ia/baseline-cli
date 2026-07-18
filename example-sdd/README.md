@@ -29,6 +29,7 @@ O con contexto directo:
 | [03-git-workflow.md](./03-git-workflow.md) | Git y PRs — branch-pr, chained-pr, work-unit-commits |
 | [04-design.md](./04-design.md) | Diseño y frontend |
 | [05-docs-testing-github.md](./05-docs-testing-github.md) | Documentación, testing y GitHub issues |
+| [06-architecture.md](./06-architecture.md) | Lineamientos de arquitectura — NestJS, Lambda, React Query, multi-tenancy |
 
 ---
 

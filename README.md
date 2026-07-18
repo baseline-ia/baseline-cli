@@ -82,6 +82,12 @@ Detection is automatic — `baseline install` reads your environment and configu
 
 25 skills are installed across all supported tools. Each skill is invoked with `/skill-name` inside your AI tool.
 
+### Architecture
+
+| Skill | What it does |
+|-------|-------------|
+| `/architecture-guidelines` | Validate and guide file placement across NestJS layers, Lambda handlers, React Query/Zustand state, and multi-tenancy rules — enforces the 7 hard rules that block CI/CD |
+
 ### SDD — Spec-Driven Development
 
 | Skill | What it does |
