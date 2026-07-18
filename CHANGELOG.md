@@ -14,6 +14,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Skills copied to `~/.kiro/skills/`
   - Team standards written to `~/.kiro/steering/baseline.md` (Kiro's native steering mechanism)
   - Detection works via `kiro` binary on PATH **or** presence of `~/.kiro` directory, since Kiro is a desktop app and the binary may not be on PATH in all environments
+- **`baseline install [tool]`** — optionally target a single tool instead of auto-detecting all
+  - `baseline install kiro` — configure only Kiro
+  - `baseline install claude` — configure only Claude Code
+  - `baseline install opencode` — configure only OpenCode
+  - Without argument, auto-detects and configures all present tools (existing behavior)
+
+### Fixed
+- `gentle-ai install` failing with "Refusing to load formula from untrusted tap" — now trusts `gentleman-programming/tap` via `brew trust` before running the install
 
 ## [0.1.0] - 2026-07-15
 

@@ -17,11 +17,11 @@ program
   .version(pkg.version)
 
 program
-  .command('install')
-  .description('Install team standards, skills and AI config')
-  .action(async () => {
+  .command('install [tool]')
+  .description('Install team standards, skills and AI config (optionally for a specific tool: claude, opencode, kiro, antigravity)')
+  .action(async (tool?: string) => {
     try {
-      await install()
+      await install(tool)
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err)
       logger.error(message)

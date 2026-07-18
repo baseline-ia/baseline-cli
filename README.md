@@ -33,11 +33,14 @@ That's it. Your machine now has the same setup as every other team member.
 ## Commands
 
 ```bash
-baseline install          # set up tools, skills, and team config
-baseline update           # pull latest baseline and re-apply standards
-baseline status           # show what's installed and configured
-baseline doctor           # diagnose missing or broken setup
-baseline onboard junior   # onboarding guide by level: junior · semi · senior
+baseline install                  # auto-detect tools and configure all
+baseline install claude           # configure only Claude Code
+baseline install opencode         # configure only OpenCode
+baseline install kiro             # configure only Kiro
+baseline update                   # pull latest baseline and re-apply standards
+baseline status                   # show what's installed and configured
+baseline doctor                   # diagnose missing or broken setup
+baseline onboard junior           # onboarding guide by level: junior · semi · senior
 ```
 
 ---

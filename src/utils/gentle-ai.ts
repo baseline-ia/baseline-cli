@@ -25,8 +25,18 @@ export async function installCli(): Promise<void> {
   })
 }
 
+function trustBrewTap(): void {
+  try {
+    execSync('brew trust gentleman-programming/tap', { stdio: 'ignore' })
+  } catch {
+    // brew not available or tap already trusted — ignore
+  }
+}
+
 export async function runInstall(agents: string[]): Promise<void> {
   if (agents.length === 0) return
+
+  trustBrewTap()
 
   const agentList = agents.join(',')
   logger.info(`Running gentle-ai install --agent ${agentList}`)
