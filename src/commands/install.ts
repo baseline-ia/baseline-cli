@@ -40,41 +40,40 @@ export async function install(tool?: string): Promise<void> {
   }
 
   const detected = detectTools()
-  const targetTool = tool ? normalizeTool(tool) : null
+  const target: AITool | null = tool ? normalizeTool(tool) : null
 
-  if (!targetTool && detected.tools.length === 0) {
+  // shouldRun: if a target was given, only run that tool; otherwise run detected tools
+  const shouldRun = (t: AITool): boolean =>
+    target !== null ? target === t : detected.tools.includes(t)
+
+  const noDetection = target === null && detected.tools.length === 0
+  if (noDetection) {
     logger.error('No AI tools detected.')
     logger.dim('Install claude, opencode, kiro-ide, kiro-cli, codex or antigravity first.')
     process.exit(1)
   }
 
-  if (targetTool) {
-    logger.info(`Target: ${targetTool}`)
+  if (target !== null) {
+    logger.info(`Target: ${target}`)
   } else {
     logger.info(`Detected: ${detected.tools.join(', ')}`)
   }
 
-  // Determine which adapters to run
-  const run = (t: AITool) => !targetTool || targetTool === t
-
-  // Collect tools for gentle-ai (only detected tools, or forced target if not detected)
-  const agentsForGentleAi: AITool[] = targetTool
-    ? [targetTool]
-    : detected.tools
+  const agentsForGentleAi: AITool[] = target !== null ? [target] : detected.tools
 
   await ensureGentleAiEcosystem(agentsForGentleAi)
   await setupOpenSpec()
 
-  if (run('claude-code') && (targetTool || detected.claudeCode))
+  if (shouldRun('claude-code'))
     await safeApply('Claude Code', () => applyClaudeCode(ASSETS_DIR))
 
-  if (run('opencode') && (targetTool || detected.opencode))
+  if (shouldRun('opencode'))
     await safeApply('OpenCode', () => applyOpenCode(ASSETS_DIR))
 
-  if ((run('kiro-ide') || run('kiro-cli')) && (targetTool || detected.kiroIde || detected.kiroCli))
+  if (shouldRun('kiro-ide') || shouldRun('kiro-cli'))
     await safeApply('Kiro', () => applyKiro(ASSETS_DIR))
 
-  if (run('antigravity') && (targetTool || detected.antigravity))
+  if (shouldRun('antigravity'))
     await safeApply('Antigravity', () => applyAntigravity(ASSETS_DIR))
 
   console.log(chalk.bold.green('\n  ✓ Team standards installed successfully\n'))
