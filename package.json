@@ -1,7 +1,7 @@
 {
   "name": "@baseline-ia/baseline-cli",
-  "version": "0.1.0",
-  "description": "Team AI development toolkit — installs standards, skills and tooling for Claude Code, OpenCode and Antigravity",
+  "version": "0.1.1",
+  "description": "Team AI development toolkit — installs standards, skills and tooling for Claude Code, OpenCode, Kiro and Antigravity",
   "repository": {
     "type": "git",
     "url": "https://github.com/baseline-ia/baseline-cli.git"
@@ -23,6 +23,7 @@
     "docs"
   ],
   "dependencies": {
+    "@baseline-ia/baseline-cli": "^0.1.0",
     "chalk": "4.1.2",
     "commander": "^12.1.0",
     "fs-extra": "^11.2.0"

@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-07-18
+
+### Added
+- Kiro IDE adapter: detects `~/.kiro`, copies skills to `~/.kiro/skills/`, and writes team standards to `~/.kiro/steering/baseline.md`
+- Kiro detection via binary (`kiro`) or presence of `~/.kiro` directory (desktop app fallback)
+
+## [0.1.0] - 2026-07-15
+
 ### Added
 - Initial release of `baseline` CLI
 - `baseline install` — installs team standards, skills, and AI tool configuration

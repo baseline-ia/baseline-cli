@@ -4,6 +4,7 @@ import { detectTools } from '../detector'
 import { apply as applyClaudeCode } from '../adapters/claude-code'
 import { apply as applyOpenCode } from '../adapters/opencode'
 import { apply as applyAntigravity } from '../adapters/antigravity'
+import { apply as applyKiro } from '../adapters/kiro'
 import { setup as setupOpenSpec } from '../utils/openspec'
 import { isInstalled as isGentleAiInstalled, installCli as installGentleAi, runInstall as runGentleAiInstall } from '../utils/gentle-ai'
 import { logger } from '../utils/logger'
@@ -17,7 +18,7 @@ export async function install(): Promise<void> {
 
   if (detected.tools.length === 0) {
     logger.error('No AI tools detected.')
-    logger.dim('Install claude, opencode or antigravity first.')
+    logger.dim('Install claude, opencode, kiro or antigravity first.')
     process.exit(1)
   }
 
@@ -29,6 +30,7 @@ export async function install(): Promise<void> {
   if (detected.claudeCode) await safeApply('Claude Code', () => applyClaudeCode(ASSETS_DIR))
   if (detected.opencode) await safeApply('OpenCode', () => applyOpenCode(ASSETS_DIR))
   if (detected.antigravity) await safeApply('Antigravity', () => applyAntigravity(ASSETS_DIR))
+  if (detected.kiro) await safeApply('Kiro', () => applyKiro(ASSETS_DIR))
 
   console.log(chalk.bold.green('\n  ✓ Team standards installed successfully\n'))
 }
