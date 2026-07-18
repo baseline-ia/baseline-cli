@@ -10,8 +10,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.1.1] - 2026-07-18
 
 ### Added
-- Kiro IDE adapter: detects `~/.kiro`, copies skills to `~/.kiro/skills/`, and writes team standards to `~/.kiro/steering/baseline.md`
-- Kiro detection via binary (`kiro`) or presence of `~/.kiro` directory (desktop app fallback)
+- **Kiro IDE support** — `baseline install` now configures Kiro automatically when detected
+  - Skills copied to `~/.kiro/skills/`
+  - Team standards written to `~/.kiro/steering/baseline.md` (Kiro's native steering mechanism)
+  - Detection works via `kiro` binary on PATH **or** presence of `~/.kiro` directory, since Kiro is a desktop app and the binary may not be on PATH in all environments
 
 ## [0.1.0] - 2026-07-15
 

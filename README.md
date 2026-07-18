@@ -23,8 +23,8 @@ That's it. Your machine now has the same setup as every other team member.
 
 | Component | Where |
 |-----------|-------|
-| AI skills (SDD, review, design, git…) | `~/.claude/skills/` · `~/.opencode/skills/` |
-| Team standards block | `~/.claude/CLAUDE.md` · `~/.opencode/AGENTS.md` |
+| AI skills (SDD, review, design, git…) | `~/.claude/skills/` · `~/.opencode/skills/` · `~/.kiro/skills/` |
+| Team standards block | `~/.claude/CLAUDE.md` · `~/.opencode/AGENTS.md` · `~/.kiro/steering/baseline.md` |
 | [Gentle-AI](https://github.com/Gentleman-Programming/gentle-ai) ecosystem | global |
 | OpenSpec structure for spec-driven development | `./openspec/` in the project |
 
@@ -62,9 +62,12 @@ Skills are installed for every step. Start any change with:
 
 | Tool | Skills | Team config |
 |------|--------|-------------|
-| [Claude Code](https://claude.ai/code) | ✅ | ✅ `CLAUDE.md` |
-| [OpenCode](https://opencode.ai) | ✅ | ✅ `AGENTS.md` |
+| [Claude Code](https://claude.ai/code) | ✅ | ✅ `~/.claude/CLAUDE.md` |
+| [OpenCode](https://opencode.ai) | ✅ | ✅ `~/.opencode/AGENTS.md` |
+| [Kiro](https://kiro.dev) | ✅ | ✅ `~/.kiro/steering/baseline.md` |
 | Antigravity | — | coming soon |
+
+Detection is automatic — `baseline install` reads your environment and configures only the tools that are present.
 
 ---
 
