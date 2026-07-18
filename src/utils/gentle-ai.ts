@@ -5,13 +5,14 @@ import type { AITool } from '../detector'
 const INSTALL_URL = 'https://raw.githubusercontent.com/Gentleman-Programming/gentle-ai/main/scripts/install.sh'
 const PERSONA = 'neutral'
 
-// Maps our tool names to gentle-ai agent IDs and install config
+// Maps our tool names to gentle-ai agent IDs and install config.
+// Codex is excluded: gentle-ai injects engram into Codex which requires >=0.144.0
+// and fails when the binary is missing or outdated.
 const AGENT_CONFIG: Record<string, { agentId: string; preset: string; sddMode?: string }> = {
   'claude-code':  { agentId: 'claude-code', preset: 'full-gentleman', sddMode: 'multi' },
   'opencode':     { agentId: 'opencode',    preset: 'full-gentleman', sddMode: 'multi' },
   'kiro-ide':     { agentId: 'kiro-ide',    preset: 'performance',    sddMode: 'multi' },
   'kiro-cli':     { agentId: 'kiro-ide',    preset: 'performance',    sddMode: 'multi' },
-  'codex':        { agentId: 'codex',       preset: 'recommended' },
   'antigravity':  { agentId: 'antigravity', preset: 'full-gentleman' },
 }
 
