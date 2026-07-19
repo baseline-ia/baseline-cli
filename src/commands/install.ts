@@ -7,6 +7,8 @@ import { apply as applyAntigravity } from '../adapters/antigravity'
 import { apply as applyKiro } from '../adapters/kiro'
 import { setup as setupOpenSpec } from '../utils/openspec'
 import { isInstalled as isGentleAiInstalled, installCli as installGentleAi, runInstall as runGentleAiInstall } from '../utils/gentle-ai'
+import { setup as setupEngram } from '../utils/engram'
+import { installGlobalHooks } from '../utils/git-hooks'
 import { logger } from '../utils/logger'
 import type { AITool } from '../detector'
 
@@ -75,6 +77,9 @@ export async function install(tool?: string): Promise<void> {
 
   if (shouldRun('antigravity'))
     await safeApply('Antigravity', () => applyAntigravity(ASSETS_DIR))
+
+  await safeApply('Engram', () => setupEngram(agentsForGentleAi))
+  await safeApply('Git hooks', () => installGlobalHooks(ASSETS_DIR))
 
   console.log(chalk.bold.green('\n  ✓ Team standards installed successfully\n'))
 }

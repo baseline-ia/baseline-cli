@@ -4,6 +4,7 @@ import { update } from './commands/update'
 import { status } from './commands/status'
 import { doctor } from './commands/doctor'
 import { onboard } from './commands/onboard'
+import { mcp } from './commands/mcp'
 import { logger } from './utils/logger'
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -74,6 +75,19 @@ program
   .action(async (level?: string) => {
     try {
       await onboard(level)
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err)
+      logger.error(message)
+      process.exit(1)
+    }
+  })
+
+program
+  .command('mcp <provider>')
+  .description('Configure an MCP server for your AI tools (e.g. baseline mcp jira)')
+  .action(async (provider: string) => {
+    try {
+      await mcp(provider)
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err)
       logger.error(message)

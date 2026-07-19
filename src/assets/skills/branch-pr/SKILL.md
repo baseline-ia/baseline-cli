@@ -41,27 +41,21 @@ Use this skill when:
 
 ## Branch Naming
 
-Branch names MUST match this regex:
+Every branch MUST reference either a Jira ticket or an SDD change id. Branches without either are blocked by the `pre-push` hook.
 
-```
-^(feat|fix|chore|docs|style|refactor|perf|test|build|ci|revert)\/[a-z0-9._-]+$
-```
+**With Jira ticket:** `type/PROJ-123-short-description`
+**Without Jira (SDD only):** `type/sdd-<change-id>-short-description`
 
-**Format:** `type/description` — lowercase, no spaces, only `a-z0-9._-` in description.
+| Type | With Jira | With SDD (no Jira) |
+|------|-----------|---------------------|
+| Feature | `feat/PROJ-123-user-login` | `feat/sdd-20240718-user-login` |
+| Bug fix | `fix/PROJ-456-null-pointer` | `fix/sdd-20240719-null-pointer` |
+| Refactor | `refactor/PROJ-321-auth-layer` | `refactor/sdd-20240720-auth-layer` |
 
-| Type | Branch pattern | Example |
-|------|---------------|---------|
-| Feature | `feat/<description>` | `feat/user-login` |
-| Bug fix | `fix/<description>` | `fix/zsh-glob-error` |
-| Chore | `chore/<description>` | `chore/update-ci-actions` |
-| Docs | `docs/<description>` | `docs/installation-guide` |
-| Style | `style/<description>` | `style/format-scripts` |
-| Refactor | `refactor/<description>` | `refactor/extract-shared-logic` |
-| Performance | `perf/<description>` | `perf/reduce-startup-time` |
-| Test | `test/<description>` | `test/add-setup-coverage` |
-| Build | `build/<description>` | `build/update-shellcheck` |
-| CI | `ci/<description>` | `ci/add-branch-validation` |
-| Revert | `revert/<description>` | `revert/broken-setup-change` |
+When there is no Jira ticket, run `/sdd-new <description>` first to generate the change id.
+
+> Never push directly to `main`, `master`, `qa`, or `develop`.
+> After every commit, the `post-commit` hook silently posts a comment to the linked Jira ticket (if credentials are configured).
 
 ---
 

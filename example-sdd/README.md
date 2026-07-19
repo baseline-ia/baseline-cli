@@ -30,6 +30,8 @@ O con contexto directo:
 | [04-design.md](./04-design.md) | Diseño y frontend |
 | [05-docs-testing-github.md](./05-docs-testing-github.md) | Documentación, testing y GitHub issues |
 | [06-architecture.md](./06-architecture.md) | Lineamientos de arquitectura — NestJS, Lambda, React Query, multi-tenancy |
+| [07-project-migration.md](./07-project-migration.md) | Migrar un proyecto existente al stack del equipo |
+| [08-git-jira-workflow.md](./08-git-jira-workflow.md) | Git workflow con Jira (Path A) y sin Jira via SDD (Path B) — hooks, commits, PRs |
 
 ---
 

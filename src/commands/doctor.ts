@@ -7,6 +7,8 @@ import { detectTools } from '../detector'
 import { getState as getOpenSpecState } from '../utils/openspec'
 import { logger } from '../utils/logger'
 import { hasClaudeTeamBlock } from '../utils/checks'
+import { isInstalled as isEngramInstalled, getVersion as getEngramVersion, detectMode as detectEngramMode, isWiredForTool } from '../utils/engram'
+import { isInstalled as areHooksInstalled } from '../utils/git-hooks'
 
 const CLAUDE_DIR = path.join(os.homedir(), '.claude')
 
@@ -54,6 +56,13 @@ export async function doctor(): Promise<void> {
       fix: 'Run: baseline install',
     })
 
+    // Git hooks
+    checks.push({
+      name: 'Git hooks installed (pre-push blocks protected branches)',
+      pass: areHooksInstalled(),
+      fix: 'Run: baseline install',
+    })
+
     // Gentle-AI
     let gentleAiInstalled = false
     try {
@@ -76,6 +85,35 @@ export async function doctor(): Promise<void> {
       logger.error(check.name)
       if (check.fix) logger.dim(`Fix: ${check.fix}`)
       allPass = false
+    }
+  }
+
+  // Engram (advisory — not blocking, but required for persistent memory)
+  logger.title('Engram (persistent memory)')
+  const engramInstalled = isEngramInstalled()
+  if (!engramInstalled) {
+    logger.warn('Engram not installed')
+    logger.dim('Fix: brew install gentleman-programming/tap/engram')
+    logger.dim('     or see: https://github.com/Gentleman-Programming/engram')
+  } else {
+    const version = getEngramVersion()
+    const mode = detectEngramMode()
+    logger.success(`Engram installed (${version})`)
+    logger.success(`Mode: ${mode}`)
+
+    if (mode === 'local') {
+      logger.dim('Tip: set ENGRAM_CLOUD_TOKEN to enable cloud sync across machines')
+    }
+
+    // Check MCP wiring per detected tool
+    for (const tool of detected.tools) {
+      const wired = await isWiredForTool(tool)
+      if (wired) {
+        logger.success(`MCP wired for ${tool}`)
+      } else {
+        logger.warn(`MCP not wired for ${tool}`)
+        logger.dim(`Fix: Run: baseline install${tool !== 'claude-code' ? ` ${tool}` : ''}`)
+      }
     }
   }
 
